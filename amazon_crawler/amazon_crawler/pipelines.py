@@ -33,7 +33,7 @@ class AmazonCrawlerPipeline(object):
             except Exception, e:
                 log.msg('insert review exception: %s'%str(e), level=log.WARNING)
         try:
-            db.insert_review_crawled_log(data[0][ASIN], seq_to, seq_from)
+            db.insert_review_crawled_log(data[0]['ASIN'], seq_to, seq_from)
         except Exception, e:
             log.msg('insert review crawled log exception: %s'%str(e), level=log.WARNING)
     
