@@ -93,6 +93,6 @@ class ReviewSpider(scrapy.Spider):
             item['success'] = False
             return item
 
-        item['data'] = [dict({'ASIN': asin}, **i) for i in extract_result]
+        item['data'] = [dict({'ASIN': asin}, **i['data']) for i in extract_result]
 
         return item
