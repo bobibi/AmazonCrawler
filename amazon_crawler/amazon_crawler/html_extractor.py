@@ -81,7 +81,6 @@ def extract(sel, extractor_list, spider, params): # spider and params are used f
                 field_value = value
                     
         ans[extractor.Field] = field_value
-                    
     return {'mismatch': mismatch, 'data':ans}
 
 def validate_filter(filter):

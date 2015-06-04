@@ -26,7 +26,7 @@ class ReviewSpider(scrapy.Spider):
             log.msg('missing or invalid param page', level=log.ERROR)
             raise exceptions.CloseSpider('missing or invalid param page, please use "-a page=<<PAGE>>"')
         
-        self.url_template = db.get_crawler_setting('AmazonReview', 'UrlTemplate')
+        self.url_template = db.get_crawler_setting(self.html_page, 'UrlTemplate')
         if not self.url_template:
             log.msg('cannot find url template in crawler setting from database', level=log.ERROR)
             raise exceptions.CloseSpider('cannot find url template in crawler setting from database')
@@ -66,7 +66,11 @@ class ReviewSpider(scrapy.Spider):
             db_log('no wrapper available for %s in table HtmlSelector'%self.html_page, 'fatal',spider = self.name)
         extractor_list = db.get_page_extractor_list(self.html_page)
         if not extractor_list:
-            db_log(message = 'no extractor for Page=AmazonProduct, refer to table HtmlExtractor',lv = 'fatal',spider = self.name)        
+            db_log(message = 'no extractor for Page=AmazonProduct, refer to table HtmlExtractor',lv = 'fatal',spider = self.name)
+        total_review_count = sel.xpath('//span[contains(@class,"totalReviewCount")]/text()').extract()
+        if not total_review_count:
+            db_log('cannot find totalReviewCount from response, url: %s'%response.url, lv='fatal', spider=self.name)
+        item['numberofreviews'] = int(re.sub(',','',total_review_count[0]))
         
         extract_result = None
         for wrapper_selector in wrapper_selector_list:
@@ -89,6 +93,6 @@ class ReviewSpider(scrapy.Spider):
             item['success'] = False
             return item
 
-        item['data'] = [dict({'ASIN': asin}, **i['data']) for i in extract_result]
+        item['data'] = [dict({'ASIN': asin}, **i) for i in extract_result]
 
         return item

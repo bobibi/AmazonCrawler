@@ -16,11 +16,16 @@ class AmazonCrawlerPipeline(object):
         elif spider.name == 'product':
             self.process_product(item['data'])
         elif spider.name == 'review':
-            self.process_review(item['data'], item['page'])
+            self.process_review(item['data'], item['page'], item['numberofreviews'])
         return item
     
-    def process_review(self, data, page):
-        for review in data:
+    def process_review(self, data, page, numofreviews):
+        seq_from = numberofreviews-10*(page-1)
+        seq_to = max(seq_from-9, 1)
+        seqs = range(seq_from, seq_to-1, -1)
+        for i in range(0:len(seqs)):
+            review = data[i]
+            review['SeqNo'] = seqs[i]
             rev = db.AmazonReview()
             self.set_table_values(rev, review)
             try:
@@ -28,35 +33,27 @@ class AmazonCrawlerPipeline(object):
             except Exception, e:
                 log.msg('insert review exception: %s'%str(e), level=log.WARNING)
         try:
-            '''TODO: identify insert exception, some exceptions may not lead to delete review page'''
-            db.delete_review_page(data[0]['ASIN'], page)
+            db.insert_review_crawled_log(data[0][ASIN], seq_to, seq_from)
         except Exception, e:
-            log.msg('delete review page exception: %s'%str(e), level=log.WARNING)
-        return
+            log.msg('insert review crawled log exception: %s'%str(e), level=log.WARNING)
     
     def process_product(self, data):
+        '''1) get old prod info from db, 2) update prod or insert prod'''
         old_prod = db.get_product_by_asin(data['ASIN'])
         prod = db.AmazonProduct()
         self.set_table_values(prod, data)
-        old_num_of_reviews = 0
-        new_num_of_reviews = int(prod.NumberOfReviews)
         if old_prod:
-            old_num_of_reviews = old_prod.NumberOfReviews
-            db.update_product(prod)
+            try:
+                db.update_product(prod)
+            except Exception, e:
+                log.msg("update product exception: %s"%str(e), level=log.WARNING)
+                return # ignore update error
         else:
             try:
                 db.insert_product(prod)
             except Exception, e:
                 log.msg("insert product exception: %s"%str(e), level=log.WARNING)
                 return # ignore duplication
-        '''now, update todo page table'''
-        try:
-            old_num_of_reviews < new_num_of_reviews and db.insert_review_page_list(prod.ASIN,
-                                   range(old_num_of_reviews/10+1,\
-                                         new_num_of_reviews/10+2 if new_num_of_reviews%10 else new_num_of_reviews/10+1))
-        except  Exception, e:
-            log.msg("insert review page exception: %s"%str(e), level=log.WARNING)
-            return # ignore duplication    
     
     def set_table_values(self, tbl_obj, values):
         for name in values.keys():

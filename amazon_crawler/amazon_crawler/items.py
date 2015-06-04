@@ -21,3 +21,4 @@ class ReviewPageItem(AmazonItem):
     # define the fields for your item here like:
     # name = scrapy.Field()
     page = scrapy.Field()
+    numberofreviews = scrapy.Field()

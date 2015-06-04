@@ -22,9 +22,6 @@ class AmazonProduct(Base):
 class AmazonReview(Base):
     __table__=Table('AmazonReview', metadata, autoload=True)
 
-class AmazonReviewPage(Base):
-    __table__=Table('AmazonReviewPage', metadata, autoload=True)
-
 class HtmlExtractor(Base):
     __table__=Table('HtmlExtractor', metadata, autoload=True)
 
@@ -36,6 +33,9 @@ class SpiderLog(Base):
     
 class CrawlerSetting(Base):
     __table__=Table('CrawlerSetting', metadata, autoload=True)
+
+class AmazonReviewCrawledLog(Base):
+    __table__=Table('AmazonReviewCrawledLog', metadata, autoload=True)
  
 ''' DB Access Helper Functions
 '''
@@ -65,16 +65,6 @@ def insert_product(prod):
     except:
         s.rollback()
         raise
-    
-def insert_review_page_list(asin, page_list):
-    global s
-    for page in page_list:
-        try:
-            s.add(AmazonReviewPage(ASIN=asin, PageNumber=page))
-            s.commit()
-        except:
-            s.rollback()
-            raise
 
 def get_html_selector_by_page_field(page, field):
     global s
@@ -129,15 +119,16 @@ def insert_review(review):
     except:
         s.rollback()
         raise
-    
-def delete_review_page(asin, page):
+
+def insert_review_crawled_log(prod_asin, seq_lower, seq_upper):
     global s
+    rcl_obj = AmazonReviewCrawledLog(ASIN=prod_asin, SeqLower=seq_lower, SeqUpper=seq_upper)
     try:
-        rp = s.query(AmazonReviewPage).filter(AmazonReviewPage.ASIN==asin, AmazonReviewPage.PageNumber==page).one()
-        s.delete(rp)
+        s.add(rcl_obj)
         s.commit()
     except:
         s.rollback()
         raise
+
 
 
