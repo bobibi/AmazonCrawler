@@ -19,7 +19,7 @@ class AmazonCrawlerPipeline(object):
             self.process_review(item['data'], item['page'], item['numberofreviews'])
         return item
     
-    def process_review(self, data, page, numofreviews):
+    def process_review(self, data, page, numberofreviews):
         seq_from = numberofreviews-10*(page-1)
         seq_to = max(seq_from-9, 1)
         seqs = range(seq_from, seq_to-1, -1)
