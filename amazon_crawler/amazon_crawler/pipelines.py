@@ -23,7 +23,7 @@ class AmazonCrawlerPipeline(object):
         seq_from = numberofreviews-10*(page-1)
         seq_to = max(seq_from-9, 1)
         seqs = range(seq_from, seq_to-1, -1)
-        for i in range(0:len(seqs)):
+        for i in range(0, len(seqs)):
             review = data[i]
             review['SeqNo'] = seqs[i]
             rev = db.AmazonReview()
