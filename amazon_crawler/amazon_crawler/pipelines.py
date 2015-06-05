@@ -32,10 +32,12 @@ class AmazonCrawlerPipeline(object):
                 db.insert_review(rev)
             except Exception, e:
                 log.msg('insert review exception: %s'%str(e), level=log.WARNING)
+        '''
         try:
             db.insert_review_crawled_log(data[0]['ASIN'], seq_to, seq_from)
         except Exception, e:
             log.msg('insert review crawled log exception: %s'%str(e), level=log.WARNING)
+        '''
     
     def process_product(self, data):
         '''1) get old prod info from db, 2) update prod or insert prod'''
