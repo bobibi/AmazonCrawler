@@ -19,6 +19,8 @@ NEWSPIDER_MODULE = 'amazon_crawler.spiders'
 ITEM_PIPELINES = ['amazon_crawler.pipelines.AmazonCrawlerPipeline']
 LOG_LEVEL = 'DEBUG'
 
-SPIDER_MIDDLEWARES = {
-'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
+DEFAULT_REQUEST_HEADERS = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'Accept-Language': 'en',
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.81 Safari/537.36'
 }
