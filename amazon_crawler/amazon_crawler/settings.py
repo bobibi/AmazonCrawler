@@ -18,3 +18,7 @@ NEWSPIDER_MODULE = 'amazon_crawler.spiders'
 
 ITEM_PIPELINES = ['amazon_crawler.pipelines.AmazonCrawlerPipeline']
 LOG_LEVEL = 'DEBUG'
+
+SPIDER_MIDDLEWARES = {
+'scrapy.contrib.spidermiddleware.referer.RefererMiddleware': True,
+}
