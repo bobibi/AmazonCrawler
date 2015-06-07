@@ -16,7 +16,7 @@ def extract(sel, extractor_list, spider, params): # spider and params are used f
         field_value = None
         if not css_selector_list:
             db_log(message = 'no selector available for P='+extractor.Page+', F='+extractor.Field+', refer to table HtmlSelector',
-                   lv = 'fatal',spider = self.name)
+                   lv = 'fatal',spider = spider)
             ## fatal will terminate program
         for css_selector in css_selector_list:
             try:
