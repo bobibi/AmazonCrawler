@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, exc
 
-engine = create_engine("mysql://:@localhost/ReviewSec?charset=utf8&use_unicode=1", echo=False)
+engine = create_engine("mysql://ReviewSec:ecbenest@localhost/ReviewSec?charset=utf8&use_unicode=1", echo=False)
 Base = declarative_base()
 metadata = MetaData(bind=engine)
 session = sessionmaker()
