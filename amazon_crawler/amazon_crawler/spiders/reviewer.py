@@ -18,7 +18,7 @@ class ProductSpider(scrapy.Spider):
     allowed_domains = ["amazon.com"]
     
     def __init__(self, *args, **kwargs):
-        if not kwargs.has_key('uid') or not re.match('^[0-9A-Z]{13,15}(,[0-9A-Z]{13,15})*$', kwargs.get('uid')):
+        if not kwargs.has_key('uid') or not re.match('^[0-9A-Z]{10,24}(,[0-9A-Z]{10,24})*$', kwargs.get('uid')):
             log.msg('missing or invalid param uid', level=log.ERROR)
             raise exceptions.CloseSpider('missing or invalid param uid, please use "-a uid=<<Amazon User ID>>"')
         self.url_template = db.get_crawler_setting(self.html_page, 'UrlTemplate')
@@ -35,7 +35,7 @@ class ProductSpider(scrapy.Spider):
             item['success'] = False
             return item
         
-        m = re.search('\/([0-9A-Z]{13,15})(?![0-9A-Z])', response.url)
+        m = re.search('\/([0-9A-Z]{10,24})(?![0-9A-Z])', response.url)
         if not m:
             db_log('cannot parse uid from response url: %s'%response.url, lv='error', spider=self.name)
             log.msg('cannot parse uid from response url: %s'%response.url, level=log.ERROR)
