@@ -17,6 +17,8 @@ class AmazonCrawlerPipeline(object):
             self.process_product(item['data'])
         elif spider.name == 'review':
             self.process_review(item['data'], item['page'], item['numberofreviews'])
+        elif spider.name == 'reviewer':
+            self.process_reviewer(item['data'])
         return item
     
     def process_review(self, data, page, numberofreviews):
@@ -55,6 +57,24 @@ class AmazonCrawlerPipeline(object):
                 db.insert_product(prod)
             except Exception, e:
                 log.msg("insert product exception: %s"%str(e), level=log.WARNING)
+                return # ignore duplication
+            
+    def process_reviewer(self, data):
+        '''1) get old reviewer info from db, 2) update reviewer or insert'''
+        old_reviewer = db.get_reviewer_by_uid(data['UID'])
+        reviewer = db.AmazonReviewer()
+        self.set_table_values(reviewer, data)
+        if old_reviewer:
+            try:
+                db.update_reviewer(reviewer)
+            except Exception, e:
+                log.msg("update reviewer exception: %s"%str(e), level=log.WARNING)
+                return # ignore update error
+        else:
+            try:
+                db.insert_reviewer(reviewer)
+            except Exception, e:
+                log.msg("insert reviewer exception: %s"%str(e), level=log.WARNING)
                 return # ignore duplication
     
     def set_table_values(self, tbl_obj, values):
