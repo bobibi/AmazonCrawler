@@ -19,6 +19,9 @@ s = session()
 class AmazonProduct(Base):
     __table__=Table('AmazonProduct', metadata, autoload=True)
     
+class AmazonReviewer(Base):
+    __table__=Table('AmazonReviewer', metadata, autoload=True)
+    
 class AmazonReview(Base):
     __table__=Table('AmazonReview', metadata, autoload=True)
 
@@ -47,6 +50,14 @@ def get_product_by_asin(prod_asin):
         prod = None
     return prod
 
+def get_reviewer_by_uid(uid):
+    global s
+    try:
+        reviewer = s.query(AmazonReviewer).filter(AmazonReviewer.UID == uid).one()
+    except exc.NoResultFound:
+        reviewer = None
+    return reviewer
+
 def update_product(prod):
     ''' Be careful, this function only updates the NumberOfReviews column!!!'''
     global s
@@ -56,11 +67,33 @@ def update_product(prod):
     except:
         s.rollback()
         raise
+
+def update_reviewer(reviewer):
+    global s
+    try:
+        s.query(AmazonReviewer).filter(AmazonReviewer.ASIN == reviewer.UID).update({
+            "NumberOfReviews": reviewer.NumberOfReviews,
+            "HelpfulVotes": reviewer.HelpfulVotes,
+            "TotalVotes": reviewer.TotalVotes,
+            "Ranking", reviewer.Ranking})
+        s.commit()
+    except:
+        s.rollback()
+        raise
     
 def insert_product(prod):
     global s
     try:
         s.add(prod)
+        s.commit()
+    except:
+        s.rollback()
+        raise
+
+def insert_reviewer(reviewer):
+    global s
+    try:
+        s.add(reviewer)
         s.commit()
     except:
         s.rollback()
