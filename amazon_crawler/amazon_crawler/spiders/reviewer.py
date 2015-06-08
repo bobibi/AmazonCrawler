@@ -55,7 +55,7 @@ class ProductSpider(scrapy.Spider):
         
         reviewer = extract_result['data']
         reviewer[u'UID'] = uid
-        reviewer[u'URL'] = response.url
+        #reviewer[u'URL'] = response.url
         
         item['data'] = reviewer
         item['success'] = True
