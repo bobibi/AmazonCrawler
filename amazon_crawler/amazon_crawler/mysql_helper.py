@@ -71,7 +71,7 @@ def update_product(prod):
 def update_reviewer(reviewer):
     global s
     try:
-        s.query(AmazonReviewer).filter(AmazonReviewer.ASIN == reviewer.UID).update({
+        s.query(AmazonReviewer).filter(AmazonReviewer.UID == reviewer.UID).update({
             "NumberOfReviews": reviewer.NumberOfReviews,
             "HelpfulVotes": reviewer.HelpfulVotes,
             "TotalVotes": reviewer.TotalVotes,
