@@ -75,7 +75,7 @@ def update_reviewer(reviewer):
             "NumberOfReviews": reviewer.NumberOfReviews,
             "HelpfulVotes": reviewer.HelpfulVotes,
             "TotalVotes": reviewer.TotalVotes,
-            "Ranking", reviewer.Ranking})
+            "Ranking": reviewer.Ranking})
         s.commit()
     except:
         s.rollback()
