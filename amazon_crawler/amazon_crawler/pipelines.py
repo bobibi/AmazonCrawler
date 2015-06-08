@@ -10,7 +10,6 @@ from scrapy import log
 class AmazonCrawlerPipeline(object):
     def process_item(self, item, spider):
         if not item['success']:
-            print 'pipeline gets empty (success=False) item, ignored'
             log.msg('pipeline gets empty (success=False) item, ignored')
             return item
         elif spider.name == 'product':
@@ -65,12 +64,14 @@ class AmazonCrawlerPipeline(object):
         reviewer = db.AmazonReviewer()
         self.set_table_values(reviewer, data)
         if old_reviewer:
+            log.msg('update reviewer')
             try:
                 db.update_reviewer(reviewer)
             except Exception, e:
                 log.msg("update reviewer exception: %s"%str(e), level=log.WARNING)
                 return # ignore update error
         else:
+            log.msg('insert reviewer')
             try:
                 db.insert_reviewer(reviewer)
             except Exception, e:
