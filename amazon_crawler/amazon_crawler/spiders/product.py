@@ -51,12 +51,14 @@ class ProductSpider(scrapy.Spider):
         extract_result = html_extractor.extract(sel, extractor_list, self.name, asin)
         
         if extract_result['mismatch']:
-            raise exceptions.CloseSpider('some required fields are not extracted correctely due to missing selector, detail is in database')
+            item['message'] = 'some required fields are not extracted correctely due to missing selector, detail is in database'
+            item['success'] = False
+        else:
+            item['success'] = True
         
         prod = extract_result['data']
         prod[u'ASIN'] = asin
         prod[u'URL'] = response.url
         
         item['data'] = prod
-        item['success'] = True
         return item
