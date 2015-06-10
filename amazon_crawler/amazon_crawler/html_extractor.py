@@ -79,7 +79,7 @@ def extract(sel, extractor_list, spider, params): # spider and params are used f
                     db_log('filter exception (T=HtmlExtractor,P=%s,F=%s): %s'%(extractor.Page,extractor.Field,str(e)),
                            'fatal')
                 field_value = value
-        if filed_value != None:
+        if field_value != None:
             log.msg('##EXTRACTED## %s=%s'%(extractor.Field,field_value))
         if field_value == None and extractor.Default != None:
             field_value = extractor.Default
