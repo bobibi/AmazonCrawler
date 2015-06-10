@@ -10,7 +10,7 @@ from scrapy import log
 class AmazonCrawlerPipeline(object):
     def process_item(self, item, spider):
         if not item['success']:
-            log.msg('pipeline gets empty (success=False) item, ignored')
+            log.msg('pipeline gets invalid (success=False) item, skip updating database')
             return item
         elif spider.name == 'product':
             self.process_product(item['data'])
