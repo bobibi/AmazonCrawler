@@ -15,7 +15,7 @@ class SpiderBase(scrapy.Spider):
     __metaclass__ = ABCMeta
     debug = False
     def __init__(self, *args, **kwargs):
-        if kwargs.has_key('debug') and kwargs.get('uid').lower()=='on':
+        if kwargs.has_key('debug') and kwargs.get('debug').lower()=='on':
             self.debug = True
     
     '''def get_arg(self, *args, **kwargs, name):
