@@ -20,9 +20,8 @@ class ProductSpider(SpiderBase):
     
     def __init__(self, *args, **kwargs):
         super(ProductSpider, self).__init__(*args, **kwargs)
-        self.uid_list = super(ProductSpider, self).require_arg(args, kwargs, 'uid')
+        self.uid_list = super(ProductSpider, self).require_arg('uid', *args, **kwargs)
         self.url_template = super(ProductSpider, self).require_crawler_setting('UrlTemplate')
-        
         self.start_urls = [re.sub('<<UID>>', a, self.url_template) for a in self.uid_list.split(',')]
 
     def parse(self, response):
