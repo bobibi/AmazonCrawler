@@ -12,6 +12,9 @@ class AmazonCrawlerPipeline(object):
         if not item['success']:
             log.msg('pipeline gets invalid (success=False) item, skip updating database')
             return item
+        elif item['debug']:
+            log.msg('DEBUG is on, skip updating database')
+            return item
         elif spider.name == 'product':
             self.process_product(item['data'])
         elif spider.name == 'review':
