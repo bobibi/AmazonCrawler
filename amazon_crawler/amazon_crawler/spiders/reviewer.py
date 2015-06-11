@@ -6,18 +6,20 @@ import amazon_crawler.spider_logger as db_logger
 from amazon_crawler.items import AmazonItem as ReviewerItem
 import amazon_crawler.mysql_helper as db
 import amazon_crawler.html_extractor as html_extractor
+from amazon_crawler.spider_base import SpiderBase
 from cssselect import GenericTranslator, SelectorError
 from scrapy import log
 from scrapy import exceptions
 import re
 
 
-class ProductSpider(scrapy.Spider):
+class ProductSpider(SpiderBase):
     name = "reviewer"
     html_page = 'AmazonReviewer'
     allowed_domains = ["amazon.com"]
     
     def __init__(self, *args, **kwargs):
+        super(ProductSpider, self).__init__(*args, **kwargs)
         if not kwargs.has_key('uid') or not re.match('^[0-9A-Z]{10,24}(,[0-9A-Z]{10,24})*$', kwargs.get('uid')):
             log.msg('missing or invalid param uid', level=log.ERROR)
             raise exceptions.CloseSpider('missing or invalid param uid, please use "-a uid=<<Amazon User ID>>"')
@@ -59,4 +61,6 @@ class ProductSpider(scrapy.Spider):
         
         item['data'] = reviewer
         item['success'] = True
+        if self.debug:
+            item['debug'] = True
         return item
