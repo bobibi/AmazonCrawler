@@ -17,6 +17,7 @@ class AmazonItem(scrapy.Item):
     data = scrapy.Field()
     success = scrapy.Field()
     message = scrapy.Field()
+    debug = scrapy.Field()
     
 class ReviewPageItem(AmazonItem):
     # define the fields for your item here like:
