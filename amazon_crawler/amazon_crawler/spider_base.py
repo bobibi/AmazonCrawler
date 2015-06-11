@@ -33,4 +33,4 @@ class SpiderBase(scrapy.Spider):
         if not kwargs.has_key(name) or not re.match(arg_setting.Value, kwargs.get(name)):
             log.msg('missing or invalid param %s'%name, level=log.ERROR)
             raise exceptions.CloseSpider('missing or invalid param %s, please use "-a %s=<<%s>>"'%(name,name,name))
-        setattr(self, name, kwargs.get(name))
+        return kwargs.get(name)
