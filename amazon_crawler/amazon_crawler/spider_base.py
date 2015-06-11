@@ -18,8 +18,8 @@ class SpiderBase(scrapy.Spider):
         if kwargs.has_key('debug') and kwargs.get('uid').lower()=='on':
             self.debug = True
     
-    def get_arg(self, *args, **kwargs, name):
-        '''arg_setting = db.get_crawler_setting(self.html_page, name)
+    '''def get_arg(self, *args, **kwargs, name):
+        arg_setting = db.get_crawler_setting(self.html_page, name)
         if not arg_setting:
             log.msg('missing configuration setting for arg: %s, refer to db table CrawlerSetting'%name, level=log.ERROR)
             raise exceptions.CloseSpider('missing configuration setting for arg: %s, refer to db table CrawlerSetting'%name)
