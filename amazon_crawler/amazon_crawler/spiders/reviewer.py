@@ -61,6 +61,8 @@ class ProductSpider(SpiderBase):
         
         item['data'] = reviewer
         item['success'] = True
+        item['debug'] = False
         if self.debug:
             item['debug'] = True
+            
         return item
