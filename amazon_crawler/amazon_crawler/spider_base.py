@@ -18,7 +18,7 @@ class SpiderBase(scrapy.Spider):
         if kwargs.has_key('debug') and kwargs.get('debug').lower()=='on':
             self.debug = True
     
-    def require_arg(self, *args, **kwargs, name):
+    def require_arg(self, args, kwargs, name):
         '''
         This method will get argument from command line which is provided by using "-a arg=val"
         If the argument is not found, an exception is raised
