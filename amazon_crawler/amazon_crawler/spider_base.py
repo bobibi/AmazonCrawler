@@ -26,7 +26,7 @@ class SpiderBase(scrapy.Spider):
         If the matching failed, an exception will be raised
         If no regexp found, exception too
         '''
-        arg_setting = db.get_crawler_setting(self.html_page, 'cl_arg.'+name+'.regexp')
+        arg_setting = db.get_crawler_setting(self.html_page, name+'.regexp')
         if not arg_setting:
             log.msg('missing configuration setting for arg: %s, refer to db table CrawlerSetting'%name, level=log.ERROR)
             raise exceptions.CloseSpider('missing configuration setting for arg: %s, refer to db table CrawlerSetting'%name)
