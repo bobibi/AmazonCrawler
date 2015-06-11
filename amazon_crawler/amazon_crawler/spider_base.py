@@ -13,13 +13,17 @@ from abc import ABCMeta
 
 class SpiderBase(scrapy.Spider):
     __metaclass__ = ABCMeta
+    debug = False
+    def __init__(self, *args, **kwargs):
+        if kwargs.has_key('debug') and kwargs.get('uid').lower()=='on':
+            self.debug = True
     
     def get_arg(self, *args, **kwargs, name):
-        arg_setting = db.get_crawler_setting(self.html_page, name)
+        '''arg_setting = db.get_crawler_setting(self.html_page, name)
         if not arg_setting:
             log.msg('missing configuration setting for arg: %s, refer to db table CrawlerSetting'%name, level=log.ERROR)
             raise exceptions.CloseSpider('missing configuration setting for arg: %s, refer to db table CrawlerSetting'%name)
         if not kwargs.has_key(name) or not re.match(arg_setting.Value, kwargs.get(name)):
             log.msg('missing or invalid param %s'%name, level=log.ERROR)
             raise exceptions.CloseSpider('missing or invalid param %s, please use "-a %s=<<%s>>"'%(name,name,name))
-        setattr(self, name, kwargs.get(name))
+        setattr(self, name, kwargs.get(name))'''
