@@ -20,16 +20,13 @@ class ProductSpider(SpiderBase):
     
     def __init__(self, *args, **kwargs):
         super(ProductSpider, self).__init__(*args, **kwargs)
-        if not kwargs.has_key('uid') or not re.match('^[0-9A-Z]{10,24}(,[0-9A-Z]{10,24})*$', kwargs.get('uid')):
-            log.msg('missing or invalid param uid', level=log.ERROR)
-            raise exceptions.CloseSpider('missing or invalid param uid, please use "-a uid=<<Amazon User ID>>"')
-        self.url_template = db.get_crawler_setting(self.html_page, 'UrlTemplate')
-        if not self.url_template:
-            log.msg('cannot find url template in crawler setting from database', level=log.ERROR)
-            raise exceptions.CloseSpider('cannot find url template in crawler setting from database')
-        self.start_urls = [re.sub('<<UID>>', a, self.url_template) for a in kwargs.get('uid').split(',')]
+        self.uid_list = super(ProductSpider, self).require_arg(*args, **kwargs, 'uid')
+        self.url_template = super(ProductSpider, self).require_crawler_setting('UrlTemplate')
+        
+        self.start_urls = [re.sub('<<UID>>', a, self.url_template) for a in self.uid_list.split(',')]
 
     def parse(self, response):
+        #super(ProductSpider, self).parse(response)
         item = ReviewerItem()
         if response.status != 200:
             db_log('url(%s) response code is %d, 200 is expected'%(response.url, response.status), 
@@ -53,14 +50,15 @@ class ProductSpider(SpiderBase):
         extract_result = html_extractor.extract(sel, extractor_list, self.name, uid)
         
         if extract_result['mismatch']:
-            raise exceptions.CloseSpider('some required fields are not extracted correctely due to missing selector, detail is in database')
+            item['success'] = False
+            item['message'] = 'some required fields are not extracted correctely due to missing selector, detail is in database'
+        else:
+            item['success'] = True
         
         reviewer = extract_result['data']
         reviewer[u'UID'] = uid
-        #reviewer[u'URL'] = response.url
         
         item['data'] = reviewer
-        item['success'] = True
         item['debug'] = False
         if self.debug:
             item['debug'] = True
